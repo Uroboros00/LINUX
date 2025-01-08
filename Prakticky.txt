@@ -1,0 +1,869 @@
+MSTSC
+
+poweroff
+ 
+ctrl c - konec pøíkazu
+cd ~ - pøepnout domù
+cd - pohyb, posouvání
+cat - vypsání souboru
+pwn - souèasný adresáø
+cd .. - výš
+./ aktoální složka
+mv - pøesunout / pøejmenovat
+chmod - zmìna práv        754
+ls - list ls -l práva
+chown - zmìna vlastníka (chown_vlastník:skupina_soubor)
+chown -R celý adrasáø
+rm - smazaní
+useradd - vytvoøený uživatele 
+passwd název_uctu - zmìna hesla (passwd - souèasný)
+
+pwd - souèasný adresáø
+
+práva vlastní root others
+
+vi - eddit souboru (i - inser mode / esc zrušit) : - pøíkazy :q zavøít :q! bez uloženi
+nano - eddit souboru    ctrl c
+
+mc zavøení F10 nebo "exit"
+mc midnight commander
+
+control+s vyhledávání v mc
+
+yum (prohledá repozitáøe od vezre centos dmf)
+dmf search php (vyhledá v názmu nebo v popisku)
+yum grouplist (skupiny programù)
+yum install epel-releace (rozšíøení o sesterský distribude [pro CentOS - Fedora])
+/etc/yum.repos.d - všechny nainstalované repoøitáøe
+/~/yum.repos.d 
+dnf clean all 
+dnf update
+yum remove název
+rpm -qa (querry all) všechny balíèky
+rpm -qa | (filtr "|"= pipe)
+rpm -ql mc-4.8.19-9.el8.x86_64 vylistování balíèku (mightnight connander)
+rpm -ivh (instalace)
+
+NÌKDY KOUKNOUT DO ETC/YUM.REPOS.D/EPEL.
+
+manuélové stránky nápovìda   (mc -h)
+
+man "název programu" (man ls   man mc)
+konec q
+
+ifconfig -všechny sítové karty
+
+síová karta lo
+local host loopback - to co se pošle se vrátí
+zbezpeènostích dùvodù, bìh síových applikací (databází) - bìží na pc a není dùvod a nelze pøistupovat z vnìjší 
+
+síovka eth0
+ethernet 1, síovka
+poèítadla dat RX TR (pøijaté odeslané)
+
+síovka virbr0
+sítovka pro virtualizaci 
+
+konfikuraze networm manager (nahoøe v pravo)
+IPV4 
+odpojit pøipojit obnova
+
+vypnání dns cat /etc/resolv.conf (pouze pro statický)
+ nastavení síových kartet /etc/sysconfig/network-scripts
+ 
+ nmcli detailní konfigurace síových kakaret
+ 
+ PREFIX=24 nebo  255.255.255.0
+ 
+ ping na 77.75.75.172 (seznam.cz)
+ ping na 8.8.8.8 (dns googlu) pokud pinguje na dns ale na ip tak není pøíkládána
+ gateway 192.168.60.254
+ 
+ centOS 7 (systemclt status network)
+ 
+ systemclt stop Networkmanager (služba)
+ systemclt start
+ systemctl status
+ systemclt enable
+  
+ restart vs reload restart = vypne a zapne celý reaload = obnoný se pouze promìné. nové hodnoty
+ systemctl is-enbled Networkmanager
+ systemctl --all --type service (všechny systémový služby) aktovovaná = startuje po startu
+ 
+   file > settings > AddHardware (Network adapter) - dá se pøidat za chodu (generace 2 pouze)
+   pøipojit na Internal (sílený mezi virtuály)
+   Apply > ok
+   Jádro to hned zjistí > Ifconfing (nová eth1)
+    
+    Nemá IP potøeba confugurace
+    možnosti: Network manager (nutnost restartu této služby)
+     
+    bez grafiky:
+     /etc/sysconfig/network-scripts
+     
+     zkopírovat eth0 pøeijmenovat na eth1
+     
+     pøíkaz cp (v mc kurzor na souboru alt + enter)
+     nebo v mc F5
+     
+     cp ifcfg-eth0 ifcfg-eth1
+     
+     editovat ifcfg-eth1
+    TYPE=Ethernet
+    DEFROUTE=no
+    vše IPv6 no / smazat
+    NAME=ifcfg-eth1
+    UUID zakomentovat #
+    DEVICE=eth1
+    IPADDR=10.0.0.1
+    PREFIX=8 (maska sítì) (možnost napsat v dekatické podobe NETMASK=255.0.0.0)
+    GATEWAY= (NEPOTØEBUJEME máme na eth0)
+    DNS1 DNS2 (NEPOTØEBUJE vše co komunikuje do internetu [dns / gateway] øeší eth0)
+    
+    nutnost restrartovat network manager
+    
+    systemctl restart NetworkManager (žádná odpovìï dobrá odpovìï)
+    ifconfig poèítadla
+   
+   Nový virtál Síová karta Internal 
+   vypnout secure boot
+   
+   když centOS se botuje mùžeme se podívat co se deje na pozadi "Esc"
+   pravý tlaèitko show text
+   
+   NetworkManeger s CentOS si ukladá configuráky pouze k sobì
+   tak je nutnost zakázat networkmanager
+   
+   POUZE CENTOS 7
+   
+   systemctl stop NetworkManager
+   systemctl disable NetworkManager
+   systemctl restart network
+   
+   v CentOS 8 NetworkManager musi bezet
+   
+   v centos 7 neni mc tak
+   vi editor / nano
+   
+   cd /etc/sysconfig/network-scripts/
+   ls - list
+   
+   nano ifcg-eth0 (edit)
+   
+   BOOTPROTO="none" ("static" je to to same v centOS 8 použivame none
+)
+IPv6 smazat vse
+Name a UUID divice nechat
+onboot yes
+
+pøidat
+
+pokud nejsou stringy s mezerama nejsou uvozovky potøeba
+
+IPADDR=10.0.0.25
+PREFIX=8  (maska)
+GATEWAY=10.0.0.1
+DNS1=192.168.50.165   
+DNS2=192.168.50.166
+
+CTR+O SAVE CTR+X EXIT
+
+systemctl restart network (notno restart) 
+ping na centos 8 
+
+když chyba systemctl status network 
+nebo journalctl
+
+
+zapnout routeing ve centOS 8 na routou
+
+ /etc/sysctl.conf editotvat   (pozor není to složka sysconf ale soubor)
+ 
+ net.ipv4.ip_forward = 1
+ 
+ uložit
+
+ route -n
+  
+ v centos 8 zapnout pøekladaè adress grafika Utilities (aktivity vyhladat) ---> Firewall
+ Na instalovat Launch (2x zadat heslo)
+ 
+ Zona public Z runtime na pernament pøepnout
+ šipky zapnout maškarádování 
+ 
+ Opsions > reload Firewall
+ 
+ ping na 8.8.8.8
+ 
+ 
+ netstat -antup (otevøené porty)
+ 
+ SSH standartí port 22
+ zmìnit protože boti skouèí útoèit na port 22 
+ nezastaví to všechno kody botù jsou pokroèilé
+ 
+ 
+ pokud není ssh na instalované rpm (pokud nevím jak se jmenuje rpm -qa | grep ssh)
+ 
+ rpm -ql openssh (list balíèku)
+ 
+ configy v /etc/shh
+ 
+ rozdíl mezi ssh_config (- knfigurece klinta) sshd_config (d - demon configurace pro server)
+ 
+ upravit sshd.config
+ 
+ Port 32 (odkomentovat)
+ 
+ AdressFamily inet (znamená IPv4, any znamená ip v6 i4 )
+ PermitRootLogin no
+ 
+ Save
+ systemctl restart sshd
+ 
+ nastane chyba SELinux blokuje port 32
+ 
+ v journal -xe nabídne
+ 
+ semanage port -a -t ssh_port -p tcp 32 (kde 32 je zadaný port)
+ 
+ znovu systemctl restart sshd
+ ovìøení v netstat -antup
+ 
+ povolit na firewalu grafika public Services --> ssh zrušit (porotože je povolený pouze standartí 22 port)
+ 
+ ports ---> add port 32 tcp
+ 
+ obsions ---> reload firewall
+ 
+ nebo v konsoli firewall-cmd --remove-service=ssh --zone=public --permanent
+ firewall-cmd --add-port=32/tpc --zone=public --permanent
+ 
+ firewall-cmd --reload
+ 
+ 
+ pøipojit  ve win 10 program PuTTY 192.168.60.218 port 32
+ 
+ pøesmìronání portu
+ 
+ pravý clic change settings Connection -Shh Tunels source port 3232 Destination 10.0.0.25:22
+ 
+ add apply
+ 
+ 
+ setenforce 0 - vypne Slinux
+ setenforce 1 - zapne 
+ 
+ 
+ DHCP SERVER
+ dnf search dhcp vyhledá balíèek se jmenéme dhcp
+ (v centos 7 dhcp v centos 8 dhcp server)
+
+ yum = dnf
+ 
+ dnf install dhcp-server
+ 
+ rpm -ql (qvuery list) dhcp server
+ rpm -ql dhcp server všechny sobory a congf
+  
+ konfiguráky hledám vždy v etc
+ 
+ dhpc conf je /etc/dhcp/dhcpd.conf
+ stáhnout obsah url wget http://aplha.kei.vspj.cz/~apribyl/dhcpd.txt
+ 
+ NEOPISOVAT STÁHNOUT pomoci getw 
+ authoritative;
+ default-lease-time 86400;
+ max-lease-time 259200;
+ option domain-name-servers 192.168.50.165, 192.168.50.166, 192.168.50.167
+ option domain-name "vspj.cz";
+ 
+ subnet 10.0.0.0 netmask 255.0.0.0 {
+  range 10.0.0.100 10.0.0.200;
+  option broadcast-address 10.255.255.255;
+  option routers 10.0.0.1; (gateway)
+ }
+  
+  
+  systemctl status dhcpd
+  
+  (vendor preset - spuštìní po spuštìní systému)
+  
+  systemctl enable dhcpd
+  systemctl start dhcpd
+  
+  ---v centos 7---
+  
+  ifcfg-eth0
+  
+  BOOTPROTO='dhcp'
+  #IPADDR=10.0.0.25 zakomentovat #
+  #PREFIX=0
+  #GATEWAY
+  #DNS
+  #DNS
+  
+  save
+  
+   systemclt restart network (NetworkManager v centos 8)
+   route -n (kontrola)
+   cat /etc/resolv.conf (kontrola)
+   
+   ping google.cz (kontrola - jde internet a dns)
+  
+  
+  
+  
+  DNS
+    (pro zajímavost knot èeský dns)
+    
+  stáhnout bind
+  
+  datové soubory (rpm -ql bind)
+  
+  /etc/named.conf
+  
+  listen on port 53 {any;};
+  (zakomentovat - // [vyjimka]) //listen on v6 port... 
+  allow-query {localhost; 10.0.0.0/8;};
+   
+save
+
+ systemctl status named
+ systemctl enable named
+systemctl start named
+
+
+    /etc/dhcp/dhcpd.conf
+    
+    edit dhcp na 10.0.0.1
+    
+    systemctl restart dhcpd
+    
+    firewall-cmd --zone=pubic --permanent --add-service=dns
+    firewall-cmd --reload
+    
+    CENTOS 7 
+    
+    cat /etc/resolf.conf
+    
+    dncp / name servery by mìly být 10.0.0.1 
+    
+  
+  
+    domena serveru
+    
+    
+   /etc/named.conf
+   
+   allow-query { any; };
+   
+   recursion yes;
+   allow-recursion {10.0.0.0/8;localhost;};
+   
+    
+    /var/named
+    
+    pwd
+    
+    wget https://alpha.kts.vspj.cz/~apribyl/myvspj.cz.txt 
+    
+    mv myvspj.cz.txt myvspj.cz
+    
+    chown root:named myvspj.cz
+    chmod o-r myvspj.cz
+    
+    dnf install bind-utils
+    systemctl restart named
+    
+    host -t soa myvspj.cz localhost   (soa záznam)
+    host -t soa seznam.cz localhost  ()
+    
+    (windows) nslookup  type=soa myvspj.cz
+    
+    SMTP SERVER
+       
+    (v CENTOS 8 - není na intalován! v 7 je)
+    
+    port 25
+    
+    dnf search postfix 
+    dnf install postfix
+          
+    rpm -ql postfix
+    
+    configy:
+    
+    /etc/postfix/master.cf (pro napojí externích komponent)
+    /etc/postfix/main.cf (hlavní configurák)
+    
+    øádek 94 
+    myhostname = mail.myvspj.cz
+    
+    øádek 102
+    mydomain = myvspj.cz
+    
+    118
+    myorigin =$mydomain
+    
+    135
+    inet_interfaces = all
+    
+    138
+    inet_protocols = ipv4
+    
+    183 zamomentovat
+    druhá položka (184) odkomentovat (s mydomin)
+    
+    283
+    (v mojí síti, hloupý tiskárny / routry)
+    
+    mynetworks = 10.0.0.0/8, 127.0.0.0/8
+    
+    438
+    odpomentovat home_mailbox = Maildir/
+    
+    (maildir - víc souborù / mailbox - jeden velký - mailbox se nepožívá)
+     
+     chybí mi nastavení aliases koukni do moodlu
+    /etc/aliases   (zmìny se musí uližit i pøíkazem)
+    
+    root ----> eit
+    
+    postalias /etc/aliases 
+    
+    systemctl status postfix
+    systemctl enable postfix
+    systemctl start postfix
+    
+    firewall
+    grafika nebo konsole
+    
+    firewall-cmd --zone=public --permanent --add=service=smtp
+    firewall-cmd --reload
+    
+    dnf search mailx
+    dnf install mailx
+    (v centos 8 není v centos 7 je)
+    
+    posílaní emailu
+    
+    echo "tady je telo emailu" | mailx -s "Mail pro eit" eit
+    echo "tady je telo emailu" | mailx -s "Mail pro ROOT" root
+    
+    email nedojde / logy:
+     /var/log/maillog
+    
+    
+    IMAP (DHCP SERVER)
+    
+    dnf install dovecod
+    
+    
+    /etc/dovecot/covecot.conf
+    
+    24 øádek 
+    protocols = imap
+    
+    30 
+    listen = *
+    
+    42
+    login_greeting = Ready.
+    
+    48
+    login_trusted_networks = 10.0.0.0/8, 127.0.0.0/8 (v moodlu je mezera ale musí být èárka a mezera)
+    
+    uložit
+    
+    systemclt status dovecat        
+    systemclt start dovecat
+    
+    netstat -antup 
+    bìží na portu 143 (neshirováno v pøípadì ssl - šifronání port 993)
+    
+    nutnost povolit na firewallu
+    
+    firewall -cmd --zone=public --permanent --add-service=imap
+    firewall -cmd --reload
+         
+    
+    ve win 10 (VIRTUÁL !!!)
+    
+    stáhnout TunderBird
+    install
+    32 bit ?? oveøit
+    
+    pøepnout ve virtuláru nastavení Network Adapter Internal
+    ping 8.8.8.8
+    ping google.com
+    ping mail.myvspj.cz
+        
+    Uvivatel EIT
+    eit@myvspj.cz
+    Password1*
+    
+    Nastavit rušnì 
+    protokol IMAP SMTP
+    Server mail.myvspj.cz mail.myvspj.cz
+    Port 143 25 (port 25 se vìtšinou blokuje) (pøi šifrování port 993 a 587 nebo 465)
+    
+    SSL žádné žádné
+    autentizace heslo, zabezpeèený heslo, zapezpeèený
+    uživatelské jméno eit eit
+    
+    uvìdomuji si rizika
+    hotovo
+    
+    FPS SERVER
+    
+    dnf install epel-release
+        
+    dnf install proFTPD
+    
+    
+    config /etc/proftpd.conf
+    
+    
+    80
+    ServerName         "server"
+    
+    save
+    
+    setsebool -P allow_ftpd_full_access=1
+    
+    podpora anonimnýho ftp
+    
+    /etc/sysconfig/proftpd
+    
+    PROFTPD_OPTIONS="-DANONYMOUS_FTP"
+    
+    usermod --shell /bin/bash ftp
+    systemctl status proftpd
+    systemctl enable proftpd
+    systemctl start proftpd
+    
+    netstat -antup | grep ftp 
+    
+    port 21 
+    
+    firewall-cmd --zone=public --permanent --add-service=tfp
+    firewall-cmd --reload
+    
+    test prohlížeè
+    ftpp://10.0.0.1
+    
+    když nejde systemctl restart proftpd
+    
+    koukout do souboru jestli pøeklep
+    
+    adraseø ftp je /var/ftp/pub
+    
+    win 10 - stánout Filezilla (zip)
+    
+    extract (rozzipovat)
+    spustit
+    
+    pøihlásit
+    
+    levo na hoøe side manager
+    
+    new side ----> cetOS 
+    porokol ftp
+    
+    host (centOS 8) 192.168.60.2xx+èíslo 
+    port se nemusí vyplnit když tak 21
+    
+    šifrování use plain FTP 
+    
+    Logon Anonimous
+    
+    OK
+    
+    
+    sloužka uploads pouze upload - nemìly by vidìt sboubory
+    
+    zkusit uload 
+    
+    zkusit ovìøení v CestOS 
+    
+    
+    New side ----> CenstOS EIT
+    
+    
+    FTP
+    192.168.30.2xx
+    Logon Type
+    Normal
+    
+    eit
+    Password1*
+    
+    (uživatelské FTP) pouze ve svém adrasáøi
+    
+    
+    
+    WEBSERVER
+    
+    Apache (ht access)
+    nginx (alternativa velké web, nìkteré aplikace nemusí podporovat)
+    
+    dnf install hpptd (Apache)
+    
+    soubory rmp -ql hpptd
+    
+    config
+    /etc/httpd/conf/httpd.conf
+    upravit F4
+    
+    øádek 45 
+    Listen 0.0.0.0:80 (mìlo by vypnout IPv6)
+    
+    save
+    
+    systemctl status httpd
+    systemctl enable httpd
+    systemctl start httpd
+    
+    ovìøení netstat -antup
+    
+    firewall-cmd --zone=public --permanent --add-service=http
+    (:443 HTTPS)
+    
+    firewall-cmd --reload
+     
+    test 
+    web a moje IP 192.168.60.2xx
+    
+    Výchozí stránky /var/www/html
+    
+    v /var/www/html
+    
+    pwd - kontrola
+    
+    pomoci nano
+    
+    vytvoøeni test webu nano intex.html
+    nano intex.html
+    
+    "mùj web"
+    
+    ctrl+o
+    enter
+    ctrl+x
+    
+    ls -l kontrola
+    
+    chown apache:apache index.html
+    
+    
+    
+    pøidani PHP
+    
+    dnf install php
+    
+    etc/httpd/conf.d/php.conf
+        
+    nemusí se upravovat
+    
+    /var/www/html
+    
+    nano index.php
+    
+    <?php
+    phpinfo();
+????    ?>
+    
+    <?php>
+    phpinfo();
+????    <?>  
+    
+    ctrl+o save
+    enter
+    ctrl+x  exit
+    
+    ls -l kontrola
+    
+    chown apache:apache index.php
+    
+    systemctl restart httpd
+    možnost i reload
+    
+    pøejmenovat index.html
+    
+    mv index.html index.html.backup
+    
+    UŽIVATELSKÉ WEBY
+    
+    !! 
+    /etc/hppd/conf.d/userdir.conf
+    
+    zakomentovat 17 (userdir disabled)
+    odkomentovat 24 (userdir)
+    
+    cd /home/eit/
+    
+    mkdir public_html
+    
+    chown eit:eit public_html
+    (chowm -R eit:eit public_html)
+    
+    /home/eit/public_html
+    
+    nano index.html
+    "mùj web eit"
+    
+    ctl+o
+    ender
+    ctl+r
+    
+    chown eit:eit index.html
+    
+    192.168.60.2xx/~eit
+    
+    problém s právy a SSLINUX
+         
+    cd /
+    chmod -R o+x /home
+    chmod u+x ~eit
+    
+    ls -l /
+    ls -l home
+         
+    setenforce 0 
+    
+    192.168.60.2xx/~eit refresh
+    
+    setenforce 1
+    
+    setsebool -P httpd_eneble_homedirs 1
+    
+    
+    virtuální weby
+    
+    web server
+    potøeba dns (windows 10)
+    
+    ping web1.myvspj.cz
+    
+    centOS
+    
+    /var/named/myvspj.cz
+    
+    edit
+    
+    nutnost zmìnit sériové èíslo 2020112000 ---> 2020112001
+     
+    pøipsat nakonec ø21
+    
+    web1    A   10.0.0.1
+    web2    A   10.0.0.1
+    
+  uložit
+  
+  systemctl restart named
+  
+  /etc/httpd/conf - hlavní conf apach
+  /etc/http/conf.d - to co pøidáme do apache
+  
+  pøejít do  /etc/http/conf.d
+  test pomoci pwd
+  
+  nano virtualhosts.conf
+  
+  zkopírovat kód z moodlu   
+   
+   vložit pøes pravé tlaèíto 
+    
+    když vložím hlavní web pøestane fungovat proto vkládáme 3
+    
+   #hlavní web
+<VirtualHost *:80>
+    DocumentRoot "/var/www/html"
+    #ServerName nepouzijeme, Apache bude reagovat na vsechny jmena - www.myvspj.cz, localhost, 127.0.0.1 atd.
+    # Other directives here
+</VirtualHost>
+<VirtualHost *:80>
+    DocumentRoot "/var/www/web1"
+    ServerName web1.myvspj.cz
+    # Other directives here
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot "/var/www/web2"
+    ServerName web2.myvspj.cz
+    # Other directives here
+</VirtualHost>
+
+
+uložit 
+
+ mkdir var/www/web1   
+mkdir var/www/web2
+mkdir var/www/web3  
+
+ls -l
+
+nano var/www/web1/index.html
+   
+   napstat text Toto je web 1
+   
+   uložit
+   
+nano var/www/web2/index.html
+    
+napstat text Toto je web 2
+   
+   uložit
+   
+   systemctl restart httpd
+   
+   
+   test na win 10 
+   
+   prohlížeè myvspj.cz
+   web1.myvspj.cz
+   
+   
+   KONEC HOTOVO JSI BOREC 
+   
+   
+   
+   
+   
+   tipy a rady 
+   
+   SSH 22 ---> 32
+   SHlinux z moodlu nebo v configuráku SSH
+   
+   systemctl status
+   jornalctl -xe
+   
+   povolit port firewall
+   
+   firewallcmd --reload
+   
+   
+   
+   
+   
+   
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        
